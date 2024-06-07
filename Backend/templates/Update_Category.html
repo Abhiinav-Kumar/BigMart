@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BigMart | Categories Update</title>
+    {% extends 'index.html' %}
+    {% block content %}
+</head>
+<body>
+
+<form method="post" action="{% url 'Update_Category' ctid=data.id %}" enctype="multipart/form-data">
+  {% csrf_token %}
+<div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Update Category</h4>
+                  <p class="card-description">
+                    Enter Details Below.
+                  </p>
+                  <div class="form-group">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text bg-primary text-white widthT">Category</span>
+                      </div>
+                      <input type="text" class="form-control" placeholder="Category" name="CATEGORY" value="{{data.title_category}}" >
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text bg-primary text-white widthT">Description</span>
+                      </div>
+                      <textarea class="form-control" rows="2" placeholder="Description" name="DESCRIPTION">{{data.Des_category}}</textarea>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text bg-primary text-white widthT">Add Image</span>
+                      </div>
+                      <img style="margin-left:8px;" src="{{data.Img_category.url}}" width="45px" height="45px">
+                       <input type="file" class="form-control" name="CIMAGES" >
+                    </div>
+                  </div>
+
+                    <button class="button-btn" type="submit">update</button>
+
+                </div>
+              </div>
+            </div>
+</form>
+
+<style>
+    .widthT{
+    width:100px;
+    }
+
+    .button-btn{
+    width:110px;
+    height:40px;
+    border:1px solid #6640b2;
+    border-radius:7px;
+    background-color:white;
+    color:#6640b2;
+    }
+
+    .button-btn:hover{
+    background-color:#6640b2;
+    color:white;
+    }
+</style>
+
+
+</body>
+</html>
+{% endblock %}

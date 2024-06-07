@@ -1,0 +1,119 @@
+from django.shortcuts import render,redirect
+from Backend.models import ProductDB,CategoriesDB
+from WebApp.models import ContactDB,UserDB,cartDB
+from django.contrib import messages
+
+# Create your views here.
+
+def Home_page(request):
+    cat = CategoriesDB.objects.all()
+    return render(request,"Home.html",{'cat':cat})
+
+def About_page(request):
+    cat = CategoriesDB.objects.all()
+    return render(request,"About.html",{'cat':cat})
+
+def Contact_page(request):
+    cat = CategoriesDB.objects.all()
+    return render(request,"Contact.html",{'cat':cat})
+
+def Product_web_page(request):
+    pro = ProductDB.objects.all()
+    cat = CategoriesDB.objects.all()
+    return render(request,"Product_web.html",{'Products':pro,'cat':cat})
+
+def Save_Contact(req):
+    if req.method=="POST":
+        NM = req.POST.get('NAME')
+        EM = req.POST.get('EMAIL')
+        PH = req.POST.get('PHONE')
+        SUB = req.POST.get('SUBJECT')
+        MES = req.POST.get('MESSAGES')
+        obj = ContactDB(Name=NM,Email=EM,Phone=PH,Subject=SUB,Messages=MES)
+        obj.save()
+        return redirect(Contact_page)
+
+def Filtered_products(req,cat_name):
+    data = ProductDB.objects.filter(category_p=cat_name)
+    cat = CategoriesDB.objects.all()
+    return render(req,"Products_Filtered.html",{'data':data,'cat':cat})
+
+def Single_Product_page(req,pro_id):
+    data = ProductDB.objects.get(id=pro_id)
+    cat = CategoriesDB.objects.all()
+    return render(req,"Single_Product.html",{'data':data,'cat':cat})
+
+def User_login_page(req):
+    return render(req,"User_Login.html")
+
+def User_Signup_page(req):
+    return render(req,"User_Signup.html")
+
+def Save_user(requset):
+    if requset.method=="POST":
+        UN = requset.POST.get('user')
+        EM = requset.POST.get('email')
+        PWD = requset.POST.get('pass')
+
+        obj =UserDB(Username=UN,Email=EM,Pass=PWD)
+        if UserDB.objects.filter(Username=UN).exists():
+            messages.warning(requset,"Username Already Exists")
+            return redirect(User_Signup_page)
+        elif UserDB.objects.filter(Email=EM).exists():
+            messages.warning(requset,"Email already Exists")
+            return redirect(User_Signup_page)
+        else:
+            obj.save()
+            messages.success(requset, "Account Created ")
+        return redirect(User_login_page)
+
+def User_loginn(request):
+    if request.method == "POST":
+        un = request.POST.get('sign_user')
+        pwd = request.POST.get('sign_pass')
+        if UserDB.objects.filter(Username=un,Pass=pwd).exists():
+            request.session['Username'] = un
+            request.session['Pass'] = pwd
+            messages.success(request,"Succesfully Login")
+            return redirect(Home_page)
+        else:
+            # messages.warning(request, "User Not Found")
+            return redirect(User_login_page)
+
+    else:
+        # messages.warning(request, "User Not Found")
+        return redirect(User_login_page)
+
+
+def user_logout(request):
+    del request.session['Username']
+    del request.session['Pass']
+    messages.success(request, "Succesfully Logout")
+    return redirect(Home_page)
+
+
+def CartPage(req):
+    cat = CategoriesDB.objects.all()
+    data = cartDB.objects.filter(Username=req.session['Username'])
+    total = 0
+    for x in data:
+        total += x.TotalPrice
+    return render(req,"Cart.html",{'cat':cat,'data':data,'total':total})
+
+def saveCart(req):
+    if req.method == "POST":
+        QN = req.POST.get('QUANTITY')
+        TP = req.POST.get('TOTALPRICE')
+        US = req.POST.get('USERNAME')
+        PN = req.POST.get('PRODUCTNAME')
+
+        obj = cartDB(Username=US,ProductName=PN,Quantity=QN,TotalPrice=TP)
+        obj.save()
+        messages.success(req,"Added to cart")
+        return redirect(CartPage)
+
+def Delete_cart_item(requset,p_id):
+    x = cartDB.objects.filter(id=p_id)
+    x.delete()
+    messages.error(requset,"Item removed")
+    return redirect(CartPage)

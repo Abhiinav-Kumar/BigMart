@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BigMart | Categories Table</title>
+{% extends 'index.html' %}
+{% block content %}
+</head>
+<body>
+
+<div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Categories Table</h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Category</th>
+                          <th>Description</th>
+                          <th>Images</th>
+                          <th>Edit</th>
+                          <th>Delete</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for x in data %}
+                      <tr>
+                          <td>{{x.title_category}}</td>
+                          <td>{{x.Des_category}}</td>
+                          <td>
+                              <img src="{{x.Img_category.url}}">
+                          </td>
+                          <td>
+                              <a href="{% url 'Update_Category_page' ctid=x.id %}">
+                                  <i  class="mdi mdi-pencil clr"></i>
+                              </a>
+                          </td>
+                          <td>
+                              <a href="{% url 'Delete_category' ctid=x.id %}">
+                                  <i class="mdi mdi-delete-forever clr"></i>
+                              </a>
+                          </td>
+                      </tr>
+
+                      {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+<style>
+    .clr{
+    color:#6640b2;
+    }
+    .clr:hover{
+    color:red;
+    }
+</style>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+{% if messages %}
+  {% for i in messages %}
+    {% if i.tags == 'warning' %}
+      <script>
+        swal('{{i}}','','warning')
+      </script>
+    {% elif i.tags == 'error' %}
+      <script>
+        swal('{{i}}','','error')
+      </script>
+    {% elif i.tags == 'info' %}
+      <script>
+        swal('{{i}}','','info')
+      </script>
+    {% else %}
+      <script>
+        swal('{{i}}','','success')
+      </script>
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+</body>
+</html>
+{% endblock %}
