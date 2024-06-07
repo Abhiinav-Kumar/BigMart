@@ -94,11 +94,24 @@ def user_logout(request):
 
 def CartPage(req):
     cat = CategoriesDB.objects.all()
-    data = cartDB.objects.filter(Username=req.session['Username'])
-    total = 0
-    for x in data:
-        total += x.TotalPrice
-    return render(req,"Cart.html",{'cat':cat,'data':data,'total':total})
+    try:
+        data = cartDB.objects.filter(Username=req.session['Username'])
+        subtotal = 0
+        shipping_charge = 0
+        total = 0
+        for x in data:
+            subtotal += x.TotalPrice
+            if subtotal >= 800:
+                shipping_charge = 30
+            elif subtotal >= 500:
+                shipping_charge = 50
+            else:
+                shipping_charge = 80
+
+            total = subtotal + shipping_charge
+        return render(req,"Cart.html",{'cat':cat,'data':data,'subtotal':subtotal,'total':total,'shipping_charge':shipping_charge})
+    except KeyError:
+        return redirect(User_login_page)
 
 def saveCart(req):
     if req.method == "POST":
@@ -117,3 +130,7 @@ def Delete_cart_item(requset,p_id):
     x.delete()
     messages.error(requset,"Item removed")
     return redirect(CartPage)
+
+def Checkout_page(req):
+    cat = CategoriesDB.objects.all()
+    return render(req,"Checkout.html",{'cat':cat})

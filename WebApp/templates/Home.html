@@ -84,12 +84,12 @@
 
 								<li><a href="{% url 'Contact' %}">Contact</a></li>
 								<li><a href="#">Shop</a>
-<!--									<ul class="sub-menu">-->
+									<ul class="sub-menu">
 <!--										<li><a href="shop.html">Shop</a></li>-->
-<!--										<li><a href="checkout.html">Check Out</a></li>-->
+										<li><a href="{% url 'Checkout_page' %}">Check Out</a></li>
 <!--										<li><a href="single-product.html">Single Product</a></li>-->
 <!--										<li><a href="cart.html">Cart</a></li>-->
-<!--									</ul>-->
+									</ul>
 								</li>
 								{% if request.session.Username %}
 									<li><a style="text-transform: capitalize;" href="{% url 'user_logout' %}">Welcome {{request.session.Username}}/Logot</a></li>
