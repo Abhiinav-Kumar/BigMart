@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from Backend.models import ProductDB,CategoriesDB
-from WebApp.models import ContactDB,UserDB,cartDB
+from WebApp.models import ContactDB,UserDB,cartDB,BillingDB
 from django.contrib import messages
 
 # Create your views here.
@@ -31,6 +31,7 @@ def Save_Contact(req):
         MES = req.POST.get('MESSAGES')
         obj = ContactDB(Name=NM,Email=EM,Phone=PH,Subject=SUB,Messages=MES)
         obj.save()
+        messages.success(req,"Your message has been sent. We aim to respond within 7 business days.")
         return redirect(Contact_page)
 
 def Filtered_products(req,cat_name):
@@ -133,4 +134,37 @@ def Delete_cart_item(requset,p_id):
 
 def Checkout_page(req):
     cat = CategoriesDB.objects.all()
-    return render(req,"Checkout.html",{'cat':cat})
+    products = cartDB.objects.filter(Username=req.session['Username'])
+    subtotal = 0
+    shipping_charge = 0
+    total = 0
+    for x in products:
+        subtotal += x.TotalPrice
+        if subtotal >= 800:
+            shipping_charge = 30
+        elif subtotal >= 500:
+            shipping_charge = 50
+        else:
+            shipping_charge = 80
+
+        total = subtotal + shipping_charge
+    return render(req,"Checkout.html",{'cat':cat,'products':products,'shipping_charge':shipping_charge,'subtotal':subtotal,'total':total})
+
+
+def Save_billing(req):
+    if req.method=="POST":
+        na = req.POST.get('username')
+        em = req.POST.get('email')
+        add = req.POST.get('address')
+        ph = req.POST.get('phone')
+        mes = req.POST.get('message')
+
+        obj = BillingDB(Name=na,Email=em,Address=add,Phone=ph,Message=mes)
+        obj.save()
+        x = cartDB.objects.filter(Username=req.session['Username'])
+        x.delete()
+        return redirect(Payment_page)
+
+
+def Payment_page(req):
+    return render(req,"Payment.html")

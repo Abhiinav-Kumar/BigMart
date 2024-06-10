@@ -20,3 +20,15 @@ class cartDB(models.Model):
     Quantity = models.IntegerField(null=True,blank=True)
     TotalPrice = models.IntegerField(null=True,blank=True)
 
+class BillingDB(models.Model):
+    Name = models.CharField(max_length=100,null=True,blank=True)
+    Email = models.EmailField(max_length=100,null=True,blank=True)
+    Address = models.CharField(max_length=150,null=True,blank=True)
+    Phone = models.IntegerField(null=True,blank=True)
+    Message = models.CharField(max_length=200,null=True,blank=True)
+
+
+
+
+
+
