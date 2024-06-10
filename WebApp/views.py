@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from Backend.models import ProductDB,CategoriesDB
 from WebApp.models import ContactDB,UserDB,cartDB,BillingDB
 from django.contrib import messages
+import razorpay
 
 # Create your views here.
 
@@ -158,8 +159,9 @@ def Save_billing(req):
         add = req.POST.get('address')
         ph = req.POST.get('phone')
         mes = req.POST.get('message')
+        tot = req.POST.get('totalprice')
 
-        obj = BillingDB(Name=na,Email=em,Address=add,Phone=ph,Message=mes)
+        obj = BillingDB(Name=na,Email=em,Address=add,Phone=ph,Message=mes,TotalPrice=tot)
         obj.save()
         x = cartDB.objects.filter(Username=req.session['Username'])
         x.delete()
@@ -167,4 +169,13 @@ def Save_billing(req):
 
 
 def Payment_page(req):
-    return render(req,"Payment.html")
+    customer = BillingDB.objects.order_by('-id').first() #Retrive BillingDb object with specified ID
+    pay = customer.TotalPrice #Get payment amount of the specified customer
+    amount = int(pay*100) #Assuming Payment amount in ruppee  #Convert amount to paisa (Smallest Currency unit)
+    pay_str = str(amount) #convert amount to string for print
+    for i in pay_str:
+        print(i)
+    if req.method=="POST":
+        order_currency = 'INR'
+        client = razorpay.Client()
+    return render(req,"Payment.html",{'customer':customer})

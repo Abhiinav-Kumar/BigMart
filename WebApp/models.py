@@ -26,6 +26,8 @@ class BillingDB(models.Model):
     Address = models.CharField(max_length=150,null=True,blank=True)
     Phone = models.IntegerField(null=True,blank=True)
     Message = models.CharField(max_length=200,null=True,blank=True)
+    TotalPrice = models.IntegerField(null=True,blank=True)
+
 
 
 
