@@ -15,7 +15,7 @@
     <div style="text-align:center; margin-top:-80px;">
         <h1>Proceed to Payment</h1>
         <h2>{{customer.Name}}</h2>
-         <input type="hidden" name="" >
+         <input type="hidden" name="">
 
 
 
@@ -80,7 +80,20 @@
         }
     </style>
 
- <script src="https://checkout.razorpay.com/v1/checkout.js">
+ <script src="https://checkout.razorpay.com/v1/checkout.js"
+
+    data-key="rzp_test_3lMy3dVuXe8hqk"
+    data-amount="{{ pay_str }}"
+    data-currency="INR"
+    data-order_id="{{ payment.order_id }}"
+    data-buttontext=""
+    data-name="BigMart"
+    data-description="Your description"
+    data-image=""
+    data-prefill.name="Abhinav"
+    data-prefill.email="abhinavkumarpa@gmail.com"
+    data-theme.color="#f28123"
+>
 
 </script>
 

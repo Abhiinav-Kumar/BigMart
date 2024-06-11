@@ -177,5 +177,6 @@ def Payment_page(req):
         print(i)
     if req.method=="POST":
         order_currency = 'INR'
-        client = razorpay.Client()
-    return render(req,"Payment.html",{'customer':customer})
+        client = razorpay.Client(auth=('rzp_test_3lMy3dVuXe8hqk','fXEFJv7RHxqbXGaIF2Xij3B5'))
+        payment = client.order.create({'amount':amount,'currency':order_currency,'payment_capture':'1'})
+    return render(req,"Payment.html",{'customer':customer, 'pay_str':pay_str})
